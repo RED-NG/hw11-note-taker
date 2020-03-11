@@ -8,6 +8,10 @@ var path = require("path");
 var app = express();
 var PORT = process.env.PORT || 8080;
 
+//router
+require("./public/routes/apiRoutes")(app);
+require("./public/routes/htmlRoutes")(app);
+
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
