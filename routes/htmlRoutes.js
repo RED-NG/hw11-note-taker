@@ -9,7 +9,6 @@ module.exports = function(app) {
     res.sendFile(path.join(__dirname, "../public/notes.html"));
   });
 
-  // redirects to home page if route path is not found
   app.get("*", function(req, res) {
     res.sendFile(path.join(__dirname, "../public/index.html"));
   });
