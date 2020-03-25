@@ -9,7 +9,7 @@ module.exports = function(app) {
     res.json(notesDB);
   });
 
-  app.post("/api/notes", (req, res) => {
+  app.post("/api/noted", (req, res) => {
     notesDB.push(req.body);
     console.log(notesDB);
     for (let i = 0; i < notesDB.length; i++) {
@@ -20,6 +20,22 @@ module.exports = function(app) {
       if (err) throw err;
       console.log("Your note has been saved!");
     });
+    res.json(true);
+  });
+
+  app.delete("/api/delete/:id", (req, res) => {
+    for (let i = 0; i < notesDB.length; i++) {
+      if (req.params.id == notesDB[i].title) {
+        notesDB.splice(i);
+      }
+    }
+    fs.writeFile(
+      path.join(__dirname, "../db/db.json"),
+      JSON.stringify(notesDB),
+      err => {
+        if (err) throw err;
+      }
+    );
     res.json(true);
   });
 };
