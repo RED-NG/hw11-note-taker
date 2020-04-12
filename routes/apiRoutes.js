@@ -1,5 +1,6 @@
 const notesDB = require("../db/db.json");
 const fs = require("fs");
+const shortid = require("shortid");
 
 module.exports = function (app) {
   app.get("/api/notes", (req, res) => {
@@ -14,10 +15,9 @@ module.exports = function (app) {
   });
 
   app.post("/api/notes", (req, res) => {
-    var newNote = req.body;
-    for (let i = 0; i < notesDB.length; i++) {
-      newNote.id = i + 1;
-    }
+    const newNote = req.body;
+    const id = shortid.generate();
+    newNote.id = id;
 
     notesDB.push(newNote);
 
@@ -28,12 +28,16 @@ module.exports = function (app) {
     res.json(true);
   });
 
-  app.delete("/api/delete/:id", (req, res) => {
-    for (let i = 0; i < notesDB.length; i++) {
-      if (req.params.id == notesDB[i].id) {
-        notesDB.splice(i, 1);
-      }
-    }
-    res.json(notesDB);
+  app.delete("/api/notes/:id", (req, res) => {
+    const noteID = req.params.id;
+
+    var index = notesDB.findIndex((item) => item.id == noteID);
+    notesDB.splice(index, 1);
+    var stringDB = JSON.stringify(notesDB);
+
+    fs.writeFile("db/db.json", stringDB, (err) => {
+      if (err) throw err;
+      res.json(notesDB);
+    });
   });
 };
